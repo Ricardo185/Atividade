@@ -23,3 +23,4 @@ Como Usar
 Clone o repositório ou faça o download dos arquivos.
 Abra o arquivo index.html em um navegador web.
 Utilize a interface para adicionar, editar, deletar e visualizar tarefas.
+
