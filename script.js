@@ -5,7 +5,7 @@ const carregando = document.querySelector(".carregando");
 const containerTarefas = document.querySelector(".container-tarefas");
 const pesquisaInput = document.getElementById("pesquisa");
 const pesquisaButton = document.querySelector(".botao-pesquisar");
-const mensagemErro = document.querySelector(".input-pesquisa-container p");
+// const mensagemErro = document.querySelector(".input-pesquisa-container p");
 
 async function getTarefasByUserId(userId) {
     const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}/todos`);
@@ -13,9 +13,7 @@ async function getTarefasByUserId(userId) {
     if (response.ok) {
         const tarefas = await response.json();
         mostrarTarefas(tarefas);
-        mensagemErro.style.display = "none";
     } else {
-        mensagemErro.style.display = "block";
         console.error("Usuário não encontrado");
     }
 }
@@ -41,12 +39,52 @@ function mostrarTarefas(tarefas) {
         </div>
     `);
     });
+
+    
+    document.querySelectorAll(".tarefa").forEach((item, index) => {
+        const tarefa = tarefas[index];
+
+        if (tarefa.completed) {
+            item.querySelector('h2').style.textDecoration = "line-through";
+            item.querySelector("p").style.textDecoration = "line-through";
+        }
+
+        item.querySelector('.editar').onclick = () => {
+            const dados = {
+                id: tarefa.id,
+                userId: tarefa.userId,
+                completed: tarefa.completed,
+                title: item.querySelector("h2").innerText,
+                descricao: item.querySelector(".descricao").innerText
+            }
+            mostrarModalEditar(dados, item);
+        }
+
+        item.querySelector('.deletar').onclick = () => {
+            deletarTarefa(tarefa.id);
+            item.remove();
+        }
+
+        item.querySelector('.completa').onclick = () => {
+            let completa = !tarefa.completed;
+            completarTarefa(tarefa.id, completa);
+            tarefa.completed = completa;
+
+            if (completa) {
+                item.querySelector('h2').style.textDecoration = "line-through";
+                item.querySelector("p").style.textDecoration = "line-through";
+            } else {
+                item.querySelector('h2').style.textDecoration = "none";
+                item.querySelector("p").style.textDecoration = "none";
+            }
+        }
+    });
 }
 
 pesquisaButton.addEventListener("click", () => {
     const userId = parseInt(pesquisaInput.value, 10);
-    if (isNaN(userId) || userId <= 0) {
-        mensagemErro.style.display = "block";
+    if (isNaN(userId) || userId <= 0 || userId > 10) {
+        alert("Digite um valor válido")
     } else {
         getTarefasByUserId(userId);
     }
@@ -222,6 +260,10 @@ async function mostrarTodasTarefas() {
 
 
 async function completarTarefa(id, isCompleted) {
+    if(id > 200){
+     console.log("Tarefa do usuário");
+     return;
+    }
     const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
         method: "PUT",
         headers: {
@@ -252,39 +294,7 @@ function mostrarModalEditar(todo, pai) {
     mudarTitulo.value = todo.title;
     mudarDescricao.value = todo.descricao || "Sem descrição";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     document.querySelector(".id-editar").innerHTML = `Usuário : ${todo.userId}`;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     document.querySelector(".atualizar").onclick = () => {
@@ -302,6 +312,10 @@ function mostrarModalEditar(todo, pai) {
 }
 
 async function atualizarTarefa(todo) {
+    if(todo.id > 200){
+        console.log("Tarefa do usuário");
+        return;
+       }
     const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${todo.id}`, {
         method: "PUT",
         headers: {
@@ -316,6 +330,10 @@ async function atualizarTarefa(todo) {
 }
 
 async function deletarTarefa(id) {
+    if(id > 200){
+        console.log("Tarefa do usuário");
+        return;
+       }
     const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
         method: "DELETE",
     });
@@ -328,6 +346,8 @@ async function deletarTarefa(id) {
 (function () {
     mostrarTodasTarefas();
 })();
+
+/// daqui pra baixo n fun
 
 function pesquisarTarefasUser() {
     pesquisar.onclick = (e) => {
@@ -357,14 +377,15 @@ async function getAllToDosOfUser(userId) {
             container.insertAdjacentHTML('afterbegin', `
         <div class="tarefa">
             <div style="display: flex; align-items: center;">
-                <button class="completa"><img src="img/verificar.jpeg" alt="Completar"></button>
+               
                 <div class="dadosTodo">
                     <h2>${item.title}</h2>
-                    <p>${item.completed ? 'Concluída' : 'Pendente'}</p>
+                    <p>Sem descri</p>
                     <p class="userId">${item.userId}</p>
                 </div>
             </div>
             <div style="display: flex;">
+                <button class="completa"><img src="img/verificar.jpeg" alt="Completar"></button>
                 <button class="editar"><img src="img/editar.jpeg" alt="Editar"></button>
                 <button class="deletar"><img src="img/lixo.jpeg" alt="Deletar"></button>
             </div>

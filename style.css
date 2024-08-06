@@ -193,7 +193,14 @@ header {
     position: absolute;
     top: 20%;
     width: 65%;
+    animation: slideIn .5s;
 }
+
+.editar-modal-container::backdrop {
+    background-color: hsla(0, 0%, 0%, 0.5);
+    animation: fadeIn .5s;
+}
+
 
 .editar-modal {
     padding: 20px;
@@ -256,4 +263,15 @@ header {
     100% {
         transform: rotate(360deg);
     }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
